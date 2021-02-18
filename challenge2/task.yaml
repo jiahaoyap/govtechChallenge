@@ -1,0 +1,95 @@
+---
+- name: Tasks to deploy nginx
+  hosts: nginx
+  tasks:
+  - name: download pcre dependency locally
+    delegate_to: localhost
+    get_url:
+      url: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.44.tar.gz
+      dest: /tmp/pcre-8.44.tar.gz
+  - name: extract pcre
+    unarchive:
+      src: /tmp/pcre-8.44.tar.gz
+      dest: /home/ubuntu
+  - name: configure pcre build
+    command:
+      cmd: /home/ubuntu/pcre-8.44/configure
+  - name: build pcre
+    make:
+      chdir: /home/ubuntu/pcre-8.44
+  - name: Run 'install' target as root for pcre
+    make:
+      chdir: /home/ubuntu/pcre-8.44
+      target: install
+
+
+  - name: download zlib dependency locally
+    delegate_to: localhost
+    get_url:
+      url: http://zlib.net/zlib-1.2.11.tar.gz
+      dest: /tmp/zlib-1.2.11.tar.gz
+  - name: extract zlib
+    unarchive:
+      src: /tmp/zlib-1.2.11.tar.gz
+      dest: /home/ubuntu
+  - name: configure zlib build
+    command:
+      cmd: /home/ubuntu/zlib-1.2.11/configure
+  - name: build zlib
+    make:
+      chdir: /home/ubuntu/zlib-1.2.11
+  - name: Run 'install' target as root for zlib
+    make:
+      chdir: /home/ubuntu/zlib-1.2.11
+      target: install
+
+
+  - name: download openssl dependency locally
+    delegate_to: localhost
+    get_url:
+      url: http://www.openssl.org/source/openssl-1.1.1g.tar.gz
+      dest: /tmp/openssl-1.1.1g.tar.gz
+  - name: extract openssl
+    unarchive:
+      src: /tmp/openssl-1.1.1g.tar.gz
+      dest: /home/ubuntu
+  - name: configure openssl build
+    command:
+      cmd: /home/ubuntu/openssl-1.1.1g/Configure darwin64-x86_64-cc --prefix=/usr
+  - name: build openssl
+    make:
+      chdir: /home/ubuntu/openssl-1.1.1g
+  - name: Run 'install' target as root for zlib
+    make:
+      chdir: /home/ubuntu/openssl-1.1.1g
+      target: install
+
+
+  - name: download files from nginx locally
+    delegate_to: localhost
+    get_url:
+      url: https://nginx.org/download/nginx-1.19.0.tar.gz
+      dest: /tmp/nginx-1.19.0.tar.gz
+      mode: 0660
+
+  - name: extract files to destination
+    unarchive:
+      src: /tmp/nginx-1.19.0.tar.gz
+      dest: /home/ubuntu
+    become: yes
+
+  - name: configure nginx build
+    command: 
+      chdir: /home/ubuntu/nginx-1.19.0/
+      cmd: ./configure --sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/nginx.conf --pid-path=/usr/local/nginx/nginx.pid --with-pcre=../pcre-8.44 --with-zlib=../zlib-1.2.11 --with-http_ssl_module --with-stream --with-mail=dynamic
+    become: yes
+
+  - name: build the default target
+    make:
+      chdir: /home/ubuntu/nginx-1.19.0
+
+  - name: Run 'install' target as root
+    make:
+      chdir: /home/ubuntu/nginx-1.19.0
+      target: install
+    become: yes

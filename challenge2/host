@@ -1,0 +1,7 @@
+[nginx]
+localhost
+
+[all:vars]
+ansible_connection=ssh
+ansible_user=ubuntu
+ansible_ssh_provate_key=~/.ssh/id_rsa

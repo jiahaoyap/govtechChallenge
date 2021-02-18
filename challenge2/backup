@@ -1,0 +1,62 @@
+ - name: download pcre dependency locally
+    delegate_to: localhost
+    get_url:
+      url: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.44.tar.gz
+      dest: /tmp/pcre-8.44.tar.gz
+  - name: extract pcre
+    unarchive:
+      src: /tmp/pcre-8.44.tar.gz
+      dest: /home/ubuntu
+  - name: configure pcre build
+    command:
+      cmd: /home/ubuntu/pcre-8.44/configure
+  - name: build pcre
+    make:
+      chdir: /home/ubuntu/pcre-8.44
+  - name: Run 'install' target as root for pcre
+    make:
+      chdir: /home/ubuntu/pcre-8.44
+      target: install
+
+
+  - name: download zlib dependency locally
+    delegate_to: localhost
+    get_url:
+      url: http://zlib.net/zlib-1.2.11.tar.gz
+      dest: /tmp/zlib-1.2.11.tar.gz
+  - name: extract zlib
+    unarchive:
+      src: /tmp/zlib-1.2.11.tar.gz
+      dest: /home/ubuntu
+  - name: configure zlib build
+    command:
+      cmd: /home/ubuntu/zlib-1.2.11/configure
+  - name: build zlib
+    make:
+      chdir: /home/ubuntu/zlib-1.2.11
+  - name: Run 'install' target as root for zlib
+    make:
+      chdir: /home/ubuntu/zlib-1.2.11
+      target: install
+
+
+  - name: download openssl dependency locally
+    delegate_to: localhost
+    get_url:
+      url: http://www.openssl.org/source/openssl-1.1.1g.tar.gz
+      dest: /tmp/openssl-1.1.1g.tar.gz
+  - name: extract openssl
+    unarchive:
+      src: /tmp/openssl-1.1.1g.tar.gz
+      dest: /home/ubuntu
+  - name: configure openssl build
+    command:
+      cmd: /home/ubuntu/openssl-1.1.1g/Configure darwin64-x86_64-cc --prefix=/usr
+  - name: build openssl
+    make:
+      chdir: /home/ubuntu/openssl-1.1.1g
+  - name: Run 'install' target as root for zlib
+    make:
+      chdir: /home/ubuntu/openssl-1.1.1g
+      target: install
+
