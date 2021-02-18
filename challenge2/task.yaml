@@ -13,7 +13,9 @@
       dest: /home/ubuntu
   - name: configure pcre build
     command:
-      cmd: /home/ubuntu/pcre-8.44/configure
+      chdir: /home/ubuntu/pcre-8.44/
+      cmd: ./configure
+      become: yes
   - name: build pcre
     make:
       chdir: /home/ubuntu/pcre-8.44
@@ -34,7 +36,9 @@
       dest: /home/ubuntu
   - name: configure zlib build
     command:
-      cmd: /home/ubuntu/zlib-1.2.11/configure
+      chdir: /home/ubuntu/zlib-1.2.11/
+      cmd: ./configure
+      become: yes
   - name: build zlib
     make:
       chdir: /home/ubuntu/zlib-1.2.11
@@ -55,7 +59,9 @@
       dest: /home/ubuntu
   - name: configure openssl build
     command:
-      cmd: /home/ubuntu/openssl-1.1.1g/Configure darwin64-x86_64-cc --prefix=/usr
+      chdir: /home/ubuntu/openssl-1.1.1g/
+      cmd: ./Configure darwin64-x86_64-cc --prefix=/usr
+      become: yes
   - name: build openssl
     make:
       chdir: /home/ubuntu/openssl-1.1.1g
@@ -76,7 +82,6 @@
     unarchive:
       src: /tmp/nginx-1.19.0.tar.gz
       dest: /home/ubuntu
-    become: yes
 
   - name: configure nginx build
     command: 
