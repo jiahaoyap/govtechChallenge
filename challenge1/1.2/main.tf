@@ -67,7 +67,7 @@ resource "aws_subnet" "db1" {
   availability_zone = "ap-southeast-1a"
 
   tags = {
-    Name = "DB Subnet"
+    Name = "DB Subnet 1"
   }
 }
 
@@ -77,7 +77,7 @@ resource "aws_subnet" "db2" {
   availability_zone = "ap-southeast-1b"
 
   tags = {
-    Name = "DB Subnet"
+    Name = "DB Subnet 2"
   }
 }
 
@@ -327,6 +327,13 @@ resource "aws_autoscaling_group" "webset" {
 
 }
 
+#warmup for web server, to allow init script to fully finish before completing code.
+resource "time_sleep" "web_warmup" {
+  depends_on = [aws_autoscaling_group.webset]
+  create_duration = "3m"
+}
+
 output "elb_dns_name" {
+  depends_on = [time_sleep.web_warmup]
   value = aws_elb.clb.dns_name
 }
