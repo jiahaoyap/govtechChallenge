@@ -31,7 +31,9 @@ place main.tf in desired folder and cd to folder
 (run commands one by one to check and ensure properly running tf setup)
 
 `terraform init`
+
 `terraform plan #command used to view which resources to be created after running terraform`
+
 `terraform apply #command used to create resources on account setup`
 
 once terraform apply is complete, refer to output to get working A record of load balancer to access the site:
